@@ -5,14 +5,13 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+$routes->setAutoRoute(false);
+
 $routes->get('/', 'Home::index');
-<<<<<<< Updated upstream
-$routes->get('/login', 'page::loginForm');
-$routes->get('/register', 'page::registerForm');
-=======
-$routes->resource('user');
-$routes->post('/user/(:num)', 'User::updatePassword/$1');
-$routes->resource('game');
-$routes->resource('topup');
-$routes->resource('transaction');
->>>>>>> Stashed changes
+$routes->get('/login', 'pages::loginForm');
+$routes->get('/register', 'pages::registerForm');
+$routes->presenter('user');
+$routes->post('/user/update-password/(:num)', 'User::updatePassword/$1');
+$routes->presenter('game');
+$routes->presenter('topup');
+$routes->presenter('transaction');

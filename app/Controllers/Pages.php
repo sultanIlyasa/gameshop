@@ -4,11 +4,11 @@ Class Pages extends BaseController
 {
     public function loginForm(): string
     {
-        return view('page/login');
+        return view('/pages/login');
     }
 
     public function registerForm(): string
     {
-        return view('page/register');
+        return view('pages/register');
     }
 }

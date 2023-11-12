@@ -19,13 +19,15 @@ class User extends ResourceController
         //
         $user = new UserModel();
 
-        $data = $user->findAll();
+        $data['users'] = $user->findAll();
 
-        if($data){
-            return $this->respond($data,200,'Data Found');
-        }else{
-            return $this->failNotFound('No Data Found', 404, 'Not Found');
-        }
+        // if($data){
+        //     return $this->respond($data,200,'Data Found');
+        // }else{
+        //     return $this->failNotFound('No Data Found', 404, 'Not Found');
+        // }
+
+        return view('/pages/admin/user/show', $data);
     }
 
     /**
@@ -55,7 +57,7 @@ class User extends ResourceController
     public function new()
     {
         //
-        return view('welcome_message');
+        return view('pages/admin/user/add');
     }
 
     /**
@@ -93,7 +95,13 @@ class User extends ResourceController
                     'max_length' => 'Password maksimal 20 karakter',
                 ],
             ],
-
+            'confirm_password' => [
+                'rules' => 'required|matches[password]',
+                'errors' => [
+                    'required' => 'Konfirmasi password harus diisi',
+                    'matches' => 'Konfirmasi password tidak sesuai dengan password'
+                ],
+            ],
         ];
 
         if(!$this->validate($rules)){
@@ -109,15 +117,18 @@ class User extends ResourceController
 
             $user->insert($data);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' => 'Data Saved',
-                ],
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'messages' => [
+            //         'success' => 'Data Saved',
+            //     ],
+            // ];
 
-            return $this->respondCreated($response, 201);
+            // return $this->respondCreated($response, 201);
+
+            session()->setFlashdata('success', 'Data berhasil ditambahkan');
+            return redirect()->to('/user');
         }
     }
 
@@ -129,7 +140,15 @@ class User extends ResourceController
     public function edit($id = null)
     {
         //
-        return view('welcome_message');
+        $user = new UserModel();
+
+        $data['user'] = $user->find($id);
+
+        if($data){
+            return view('pages/admin/user/edit', $data);
+        }else{
+            return $this->failNotFound('No Data Found with id ' . $id, 404, 'Not Found');
+        }
     }
 
     /**
@@ -192,15 +211,17 @@ class User extends ResourceController
             $user->update($id, $data);
 
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' => 'Data Updated',
-                ],
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'messages' => [
+            //         'success' => 'Data Updated',
+            //     ],
+            // ];
 
-            return $this->respondCreated($response, 201);
+            // return $this->respondCreated($response, 201);
+            session()->setFlashdata('success', 'Data berhasil diupdate');
+            return redirect()->to('/user');
         }
     }
 
@@ -236,15 +257,17 @@ class User extends ResourceController
 
             $user->update($id, $data);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' => 'Data Updated',
-                ],
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'messages' => [
+            //         'success' => 'Data Updated',
+            //     ],
+            // ];
 
-            return $this->respondCreated($response, 201);
+            // return $this->respondCreated($response, 201);
+            session()->setFlashdata('success', 'Password berhasil diupdate');
+            return redirect()->to('/user');
         }
     }
 
@@ -263,15 +286,16 @@ class User extends ResourceController
         if($data){
             $user->delete($id);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' => 'Data Deleted',
-                ],
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'messages' => [
+            //         'success' => 'Data Deleted',
+            //     ],
+            // ];
 
-            return $this->respondDeleted($response, 201);
+            // return $this->respondDeleted($response, 201);
+            return redirect()->to('/user');
         }else{
             return $this->failNotFound('No Data Found with id ' . $id, 404, 'Not Found');
         }
