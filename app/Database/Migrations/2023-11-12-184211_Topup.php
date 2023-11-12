@@ -24,6 +24,10 @@ class Topup extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
+            'title' => [
+                'type' => 'VARCHAR',
+                'constraint' => 50,
+            ],
         ]);
         $this->forge->addKey('topup_id', true);
         $this->forge->addForeignKey('game_id', 'games', 'game_id', 'CASCADE', 'CASCADE');

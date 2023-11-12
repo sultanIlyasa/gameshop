@@ -49,6 +49,10 @@ class Transaction extends Migration
                 'null' => true,
             ],
         ]);
+        $this->forge->addKey('transaction_id', true);
+        $this->forge->addForeignKey('user_id', 'users', 'user_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('games_id', 'games', 'game_id', 'CASCADE', 'CASCADE');
+        $this->forge->createTable('transaction');
     }
 
     public function down()
