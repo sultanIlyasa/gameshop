@@ -4,33 +4,34 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class Games extends Migration
+class TbUsers extends Migration
 {
     public function up()
     {
         //
         $this->forge->addField([
-            'game_id' => [
+            'user_id' => [
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
-            'title' => [
+            'name' => [
                 'type' => 'VARCHAR',
                 'constraint' => 50,
             ],
-            'slug' => [
+            'email' => [
                 'type' => 'VARCHAR',
                 'constraint' => 50,
             ],
-            'description' => [
+            'password' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
-            'image' => [
+            'role' => [
                 'type' => 'VARCHAR',
-                'constraint' => 255,
+                'constraint' => 10,
+                'default' => 'user',
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -41,14 +42,14 @@ class Games extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addKey('game_id', true);
-        $this->forge->addUniqueKey('title');
-        $this->forge->addUniqueKey('slug');
-        $this->forge->createTable('games');
+        $this->forge->addKey('user_id', true);
+        $this->forge->addUniqueKey('email');
+        $this->forge->createTable('users');
     }
 
     public function down()
     {
         //
+        $this->forge->dropTable('users');
     }
 }

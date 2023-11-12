@@ -4,41 +4,30 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class Transaction extends Migration
+class TbTopups extends Migration
 {
     public function up()
     {
         //
         $this->forge->addField([
-            'transaction_id' => [
+            'topup_id' => [
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
-            'user_id' => [
+            'game_id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+            ],
+            'price' => [
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'games_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-            ],
-            'gameuser_id' => [
+            'topup_title' => [
                 'type' => 'VARCHAR',
-                'constraint' => 11,
-            ],
-            'game_location' => [
-                'type' => 'VARCHAR',
-                'constraint' => 255,
-            ],
-            'payment_method' => [
-                'type' => 'VARCHAR',
-                'constraint' => 255,
-            ],
-            'total_payment' => [
-                'type' => 'INT',
-                'constraint' => 11,
+                'constraint' => 50,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -49,14 +38,14 @@ class Transaction extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addKey('transaction_id', true);
-        $this->forge->addForeignKey('user_id', 'users', 'user_id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('games_id', 'games', 'game_id', 'CASCADE', 'CASCADE');
-        $this->forge->createTable('transaction');
+        $this->forge->addKey('topup_id', true);
+        $this->forge->addForeignKey('game_id', 'games', 'game_id', 'CASCADE', 'CASCADE');
+        $this->forge->createTable('topups');
     }
 
     public function down()
     {
         //
+        $this->forge->dropTable('topups');
     }
 }
