@@ -29,16 +29,22 @@
                 <td><?= $user['role']; ?></td>
                 <td><?= $user['created_at']; ?></td>
                 <td><?= $user['updated_at']; ?></td>
-                <td style="display:flex; justify-content: center; gap:3px">
-                    <a href="/user/edit/<?= $user['user_id']; ?>">
-                        <button type="submit">Edit</button>
-                    </a>
-                    <form action="/user/delete/<?= $user['user_id']; ?>" method="post">
-                        <button type="submit">Delete</button>
-                    </form>
+                <td>
+                    <div style="display:flex; justify-content: center; gap:3px;">
+                        <a href="/user/edit/<?= $user['user_id']; ?>">
+                            <button type="submit">Edit</button>
+                        </a>
+                        <form action="/user/delete/<?= $user['user_id']; ?>" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="7">No Data</td>
+                </tr>
             <?php endif; ?>
         </tbody>
     </table>

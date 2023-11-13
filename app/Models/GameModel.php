@@ -16,7 +16,7 @@ class GameModel extends Model
         'title',
         'slug',
         'description',
-        'image',
+        'game_image',
         'created_at',
         'updated_at',
     ];

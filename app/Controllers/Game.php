@@ -19,13 +19,15 @@ class Game extends ResourceController
         //
         $game = new GameModel();
 
-        $data = $game->findAll();
+        $data['games'] = $game->findAll();
 
-        if($data){
-            return $this->respond($data,200,'Data Found');
-        }else{
-            return $this->failNotFound('No Data Found', 404, 'Not Found');
-        }
+        // if($data){
+        //     return $this->respond($data,200,'Data Found');
+        // }else{
+        //     return $this->failNotFound('No Data Found', 404, 'Not Found');
+        // }
+
+        return view('/pages/admin/game/show', $data);
     }
 
     /**
@@ -55,7 +57,7 @@ class Game extends ResourceController
     public function new()
     {
         //
-        return view('welcome_message');
+        return view('pages/admin/game/add');
     }
 
     /**
@@ -82,15 +84,15 @@ class Game extends ResourceController
                     'required' => 'Game description is required'
                 ]
             ],
-            // 'image' => [
-            //     'rules' => 'uploaded[image]|max_size[image,1024]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
-            //     'errors' => [
-            //         'uploaded' => 'Game image is required',
-            //         'max_size' => 'Game image size is too big',
-            //         'is_image' => 'Game image is not an image',
-            //         'mime_in' => 'Game image is not an image'
-            //     ]
-            // ]
+            'image' => [
+                'rules' => 'uploaded[image]|max_size[image,1024]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'uploaded' => 'Game image is required',
+                    'max_size' => 'Game image size is too big',
+                    'is_image' => 'Game image is not an image',
+                    'mime_in' => 'Game image is not an image'
+                ]
+            ]
         ];
 
         if (!$this->validate($rules)) {
@@ -98,28 +100,31 @@ class Game extends ResourceController
         } else {
             $game = new GameModel();
 
-            // $image = $this->request->getFile('image');
-            // $imageName = $image->getRandomName();
-            // $image->move('assets/images/games', $imageName);
+            $image = $this->request->getFile('image');
+            $imageName = $image->getRandomName();
+            $image->move('assets/images/games/', $imageName);
 
             $data = [
                 'title' => $this->request->getVar('title'),
                 'slug' => url_title($this->request->getVar('title'), '-', true),
                 'description' => $this->request->getVar('description'),
-                // 'game_image' => $imageName,
+                'game_image' => $imageName,
             ];
 
             $game->insert($data);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'message' => [
-                    'success' => 'Game created successfully'
-                ]
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'message' => [
+            //         'success' => 'Game created successfully'
+            //     ]
+            // ];
 
-            return $this->respond($response, 201);
+            // return $this->respond($response, 201);
+
+            session()->setFlashdata('success', 'Game berhasil ditambahkan');
+            return redirect()->to('/game');
         }
     }
 
@@ -131,6 +136,17 @@ class Game extends ResourceController
     public function edit($id = null)
     {
         //
+        $game = new GameModel();
+
+        $data['game'] = $game->where('slug', $id)->first();
+
+        if ($data) {
+            return view('pages/admin/game/edit', $data);
+        } else {
+            // return $this->failNotFound('No Data Found with id ' . $id, 404, 'Not Found');
+            session()->setFlashdata('error', 'Game tidak ditemukan');
+            return redirect()->to('/game');
+        }
     }
 
     /**
@@ -156,15 +172,15 @@ class Game extends ResourceController
                     'required' => 'Deskripsi harus diisi',
                 ]
             ],
-            // 'image' => [
-            //     'rules' => 'max_size[image,1024]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
-            //     'errors' => [
-            //         'uploaded' => 'Game image is required',
-            //         'max_size' => 'Game image size is too big',
-            //         'is_image' => 'Game image is not an image',
-            //         'mime_in' => 'Game image is not an image'
-            //     ]
-            // ]
+            'image' => [
+                'rules' => 'max_size[image,1024]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'uploaded' => 'Game image is required',
+                    'max_size' => 'Game image size is too big',
+                    'is_image' => 'Game image is not an image',
+                    'mime_in' => 'Game image is not an image'
+                ]
+            ]
         ];
 
         if (!$this->validate($rules)) {
@@ -183,25 +199,25 @@ class Game extends ResourceController
                 }
             }
 
-            // $image = $this->request->getFile('image');
-            // $oldImage = $game->where('slug', $id)->first()['image'];
+            $image = $this->request->getFile('image');
+            $oldImage = $game->where('slug', $id)->first()['game_image'];
+            $imageName = $image->getName();
+            if($imageName == $oldImage || $imageName == null){
+                $imageName = $oldImage;
+            }else{
+                if($image != null){
+                    unlink('assets/images/games/' . $oldImage);
+                }
 
-            // if($image == $oldImage || $image == null){
-            //     $imageName == $oldImage;
-            // }else{
-            //     if($oldImage != null){
-            //         unlink('assets/images/games/' . $oldImage);
-            //     }
-
-            //     $imageName = $image->getRandomName();
-            //     $image->move('assets/images/games', $imageName);
-            // }
+                $imageName = $image->getRandomName();
+                $image->move('assets/images/games', $imageName);
+            }
 
             $data = [
                 'title' => $title,
                 'slug' => url_title($title, '-', true),
                 'description' => $this->request->getVar('description'),
-                // 'game_image' => $imageName,
+                'game_image' => $imageName,
             ];
 
             $id = $game->where('slug', $id)->first()['game_id'];
@@ -234,21 +250,26 @@ class Game extends ResourceController
 
         
         if ($data) {
-            // unlink('assets/images/games/' . $data['game_image']);
+            unlink('assets/images/games/' . $data['game_image']);
 
             $game->delete($data['game_id']);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'message' => [
-                    'success' => 'Game deleted successfully'
-                ]
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'message' => [
+            //         'success' => 'Game deleted successfully'
+            //     ]
+            // ];
 
-            return $this->respondDeleted($response, 201);
+            // return $this->respondDeleted($response, 201);
+
+            session()->setFlashdata('success', 'Game berhasil dihapus');
+            return redirect()->to('/game');
         } else {
-            return $this->failNotFound('No Data Found with id ' . $id, 404, 'Not Found');
+            // return $this->failNotFound('No Data Found with id ' . $id, 404, 'Not Found');
+            session()->setFlashdata('error', 'Game gagal dihapus');
+            return redirect()->to('/game');
         }
     }
 }

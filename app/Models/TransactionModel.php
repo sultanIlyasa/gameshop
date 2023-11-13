@@ -19,7 +19,7 @@ class TransactionModel extends Model
         'game_location',
         'payment_method',
         'total_payment',
-        'payment_img',
+        'payment_image',
     ];
 
     // Dates
