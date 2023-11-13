@@ -8,8 +8,15 @@ use CodeIgniter\Router\RouteCollection;
 $routes->setAutoRoute(false);
 
 $routes->get('/', 'Home::index');
-$routes->get('/login', 'pages::loginForm');
-$routes->get('/register', 'pages::registerForm');
+$routes->get('/login', 'auth::index');
+$routes->post('/login', 'auth::login');
+$routes->get('/logout', 'auth::logout');
+
+$routes->get('/forgot-password', 'auth::forgotPassword');
+$routes->post('/forgot-password', 'auth::changePassword');
+
+$routes->get('/register', 'auth::registerView');
+$routes->post('/register', 'auth::register');
 $routes->presenter('user');
 $routes->post('/user/update-password/(:num)', 'User::updatePassword/$1');
 $routes->presenter('game');
