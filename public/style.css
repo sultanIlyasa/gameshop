@@ -59,6 +59,12 @@ footer {
   width: 100%;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
 .login-container h2 {
   text-align: center;
   color: #333;

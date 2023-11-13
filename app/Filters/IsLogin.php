@@ -27,6 +27,7 @@ class IsLogin implements FilterInterface
     {
         //
         if(session()->get('isLoggedIn')){
+            session()->setFlashdata('error', 'You are already logged in');
             return redirect()->to('/');
         }
     }

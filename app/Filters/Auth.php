@@ -26,6 +26,10 @@ class Auth implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         //
+        if (!session()->get('isLoggedIn')) {
+            session()->setFlashdata('error', 'You are not logged in');
+            return redirect()->to('/login');
+        }
     }
 
     /**

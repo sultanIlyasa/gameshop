@@ -27,6 +27,7 @@ class IsAdmin implements FilterInterface
     {
         //
         if (!session()->get('isLoggedIn')) {
+            session()->setFlashdata('error', 'You are not logged in');
             return redirect()->to('/login');
         } else {
             if (session()->get('role') != 'admin') {

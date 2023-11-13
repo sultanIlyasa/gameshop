@@ -1,19 +1,20 @@
 <header>
     <nav>
         <div>
-            <h1>LOGO</h1>
+            <a href="/">
+                <h1>LOGO</h1>
+            </a>
         </div>
         <div class="nav-right">
-            <div>
-                <a href="<?= base_url('/'); ?>">Home</a>
-                <a href="/profile">Profile</a>
-            </div>
             <?php if(!session()->get('isLoggedIn')): ?>
                 <div>
                     <a href="/login">Login</a>
                     <a href="/register">register</a>
                 </div>
             <?php else: ?>
+            <div>
+                <a href="/profile">Profile</a>
+            </div>
             <div>
                 <a href="/logout">logout</a>
             </div>
