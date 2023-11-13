@@ -6,6 +6,9 @@
             <a href="/game">Game</a>
             <a href="/topup">Topup</a>
             <a href="/transaction">Transaction</a>
+            <div>
+                <a href="/logout">logout</a>
+            </div>
         </li>
     </ul>
 </header>

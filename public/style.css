@@ -1,11 +1,12 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background-color: #f2f2f2;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
 }
 
 .login-container {
@@ -14,6 +15,48 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
   width: 300px;
+}
+
+main {
+  margin-top: 80px;
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #333;
+  color: #fff;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 50;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  color: #fff;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 .login-container h2 {
@@ -73,12 +116,32 @@ body {
   flex-direction: column;
 }
 
-footer {
-  background-color: #333;
+.toast-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  margin: 0 auto;
+  z-index: 70;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  min-width: 250px;
+  max-width: 250px;
+  margin-left: -125px;
+}
+
+.toast {
   color: white;
   text-align: center;
-  padding: 10px 0;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.success {
+  background-color: green;
+}
+
+.error {
+  background-color: red;
 }

@@ -27,6 +27,7 @@ class Filters extends BaseConfig
         'secureheaders' => SecureHeaders::class,
         'isLogin'       => \App\Filters\IsLogin::class,
         'isAdmin'       => \App\Filters\IsAdmin::class,
+        'auth'          => \App\Filters\Auth::class,
     ];
 
     /**

@@ -1,11 +1,23 @@
-<header style="position:fixed; top:0;">
-    <ul style="display:flex; justify-content: center; gap:10px;">
-        <li style="display:flex; justify-content: center; gap:10px;">
-            <a href="<?= base_url('/'); ?>">Home</a>
-            <a href="/profile">Profile</a>
-            <a href="/login">Login</a>
-            <a href="/register">register</a>
-            <a href="/logout">logout</a>
-        </li>
-    </ul>
+<header>
+    <nav>
+        <div>
+            <h1>LOGO</h1>
+        </div>
+        <div class="nav-right">
+            <div>
+                <a href="<?= base_url('/'); ?>">Home</a>
+                <a href="/profile">Profile</a>
+            </div>
+            <?php if(!session()->get('isLoggedIn')): ?>
+                <div>
+                    <a href="/login">Login</a>
+                    <a href="/register">register</a>
+                </div>
+            <?php else: ?>
+            <div>
+                <a href="/logout">logout</a>
+            </div>
+            <?php endif; ?>
+        </div>
+    </nav>
 </header>

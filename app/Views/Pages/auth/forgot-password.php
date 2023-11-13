@@ -4,7 +4,7 @@
 
 <main>
     <div class="register-container">
-        <h2>Register</h2>
+        <h2>Lupa Password</h2>
         <form action="/forgot-password" method="post" class="register-form">
             
             <div class="form-group">
@@ -23,7 +23,7 @@
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Forgot Password">
+                <input type="submit" value="Lupa Password">
             </div>
         </form>
     </div>
