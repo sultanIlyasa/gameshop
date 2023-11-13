@@ -3,6 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\TransactionModel;
+use App\Models\GameModel;
+use App\Models\TopupModel;
+use App\Models\UserModel;
 use CodeIgniter\RESTful\ResourceController;
 
 class Transaction extends ResourceController
@@ -17,17 +20,16 @@ class Transaction extends ResourceController
         //
         $transaction = new TransactionModel();
 
-        if($transaction->countAll() == 0){
-            return $this->failNotFound('Data tidak Ditemukan', 404, 'Not Found');
-        }
 
-        $data = $transaction->join('games', 'games.game_id = transactions.game_id')->join('users', 'users.user_id = transactions.user_id')->findAll();
+        $data['transactions'] = $transaction->join('games', 'games.game_id = transactions.game_id')->join('users', 'users.user_id = transactions.user_id')->findAll();
 
-        if($data){
-            return $this->respond($data,200,'Data ditemukan');
-        }else{
-            return $this->failNotFound('Data tidak Ditemukan', 404, 'Not Found');
-        }
+        // if($data){
+        //     return $this->respond($data,200,'Data ditemukan');
+        // }else{
+        //     return $this->failNotFound('Data tidak Ditemukan', 404, 'Not Found');
+        // }
+
+        return view('pages/admin/transaction/show', $data);
     }
 
     /**
@@ -61,7 +63,16 @@ class Transaction extends ResourceController
     public function new()
     {
         //
-        return view('welcome_message');
+        // $transaction = new TransactionModel();
+        $game = new GameModel();
+        // $topup = new TopupModel();
+        $user = new UserModel();
+
+        $data['games'] = $game->findAll();
+        $data['users'] = $user->findAll();
+        // $data['topups'] = $topup->findAll();
+
+        return view('pages/admin/transaction/add', $data);
     }
 
     /**
@@ -111,25 +122,27 @@ class Transaction extends ResourceController
                     'required' => 'Total payment harus diisi.'
                 ]
             ],
-            // 'payment_image' => [
-            //     'rules' => 'uploaded[payment_image]|max_size[payment_image,10240]|is_image[payment_image]|mime_in[payment_image,image/jpg,image/jpeg,image/png]',
-            //     'errors' => [
-            //         'uploaded' => 'Gambar harus diupload.',
-            //         'max_size' => 'Ukuran gambar maksimal 1MB.',
-            //         'is_image' => 'File yang diupload harus gambar.',
-            //         'mime_in' => 'File yang diupload harus gambar.'
-            //     ]
-            // ]
+            'image' => [
+                'rules' => 'uploaded[image]|max_size[image,10240]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'uploaded' => 'Gambar harus diupload.',
+                    'max_size' => 'Ukuran gambar maksimal 1MB.',
+                    'is_image' => 'File yang diupload harus gambar.',
+                    'mime_in' => 'File yang diupload harus gambar.'
+                ]
+            ]
         ];
 
         if (!$this->validate($rules)) {
-            return $this->fail($this->validator->getErrors());
+            // return $this->fail($this->validator->getErrors());
+            session()->setFlashdata('error', $this->validator->getErrors());
+            return redirect()->to('/transaction/new')->withInput();
         } else {
             $transaction = new TransactionModel();
 
-            // $image = $this->request->getFile('image');
-            // $imageName = $image->getRandomName();
-            // $image->move('assets/images/transactions', $imageName);
+            $image = $this->request->getFile('image');
+            $imageName = $image->getRandomName();
+            $image->move('assets/images/transactions/', $imageName);
 
             $data = [
                 'user_id' => $this->request->getVar('user_id'),
@@ -138,20 +151,22 @@ class Transaction extends ResourceController
                 'game_location' => $this->request->getVar('game_location'),
                 'payment_method' => $this->request->getVar('payment_method'),
                 'total_payment' => $this->request->getVar('total_payment'),
-                // 'payment_image' => $imageName,
+                'payment_image' => $imageName,
             ];
 
             $transaction->insert($data);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' => 'Data berhasil ditambahkan'
-                ]
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'messages' => [
+            //         'success' => 'Data berhasil ditambahkan'
+            //     ]
+            // ];
 
-            return $this->respondCreated($response, 201);
+            // return $this->respondCreated($response, 201);
+            session()->setFlashdata('success', 'Data berhasil ditambahkan');
+            return redirect()->to('/transaction');
         }
     }
 
@@ -163,7 +178,15 @@ class Transaction extends ResourceController
     public function edit($id = null)
     {
         //
-        return view('welcome_message');
+        $transaction = new TransactionModel();
+        $game = new GameModel();
+        $user = new UserModel();
+
+        $data['transaction'] = $transaction->join('games', 'games.game_id = transactions.game_id')->join('users', 'users.user_id = transactions.user_id')->where('transaction_id', $id)->first();
+        $data['games'] = $game->findAll();
+        $data['users'] = $user->findAll();
+
+        return view('pages/admin/transaction/edit', $data);
     }
 
     /**
@@ -213,24 +236,27 @@ class Transaction extends ResourceController
                     'required' => 'Total payment harus diisi.'
                 ]
             ],
-            // 'payment_image' => [
-            //     'rules' => 'max_size[payment_image,10240]|is_image[payment_image]|mime_in[payment_image,image/jpg,image/jpeg,image/png]',
-            //     'errors' => [
-            //         'max_size' => 'Ukuran gambar maksimal 1MB.',
-            //         'is_image' => 'File yang diupload harus gambar.',
-            //         'mime_in' => 'File yang diupload harus gambar.'
-            //     ]
-            // ]
+            'image' => [
+                'rules' => 'max_size[image,10240]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'max_size' => 'Ukuran gambar maksimal 1MB.',
+                    'is_image' => 'File yang diupload harus gambar.',
+                    'mime_in' => 'File yang diupload harus gambar.'
+                ]
+            ]
         ];
 
         if (!$this->validate($rules)) {
             return $this->fail($this->validator->getErrors());
+            // session()->setFlashdata('error', $this->validator->getErrors());
+            // return redirect()->to('/transaction/edit/' . $id)->withInput();
         } else {
             $transaction = new TransactionModel();
 
             $image = $this->request->getFile('image');
             $oldImage = $transaction->where('transaction_id', $id)->first()['payment_image'];
-            if($oldImage == $image || $image == null){
+            $imageName = $image->getName();
+            if($oldImage == $imageName || $imageName == null){
                 $imageName = $oldImage;
             }else{
                 if($oldImage != null){
@@ -248,20 +274,22 @@ class Transaction extends ResourceController
                 'game_location' => $this->request->getVar('game_location'),
                 'payment_method' => $this->request->getVar('payment_method'),
                 'total_payment' => $this->request->getVar('total_payment'),
-                // 'payment_image' => $imageName,
+                'payment_image' => $imageName,
             ];
 
             $transaction->update($id, $data);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' => 'Data berhasil diupdate'
-                ]
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'messages' => [
+            //         'success' => 'Data berhasil diupdate'
+            //     ]
+            // ];
 
-            return $this->respondCreated($response, 201);
+            // return $this->respondCreated($response, 201);
+            session()->setFlashdata('success', 'Data berhasil diupdate');
+            return redirect()->to('/transaction');
         }
     }
 
@@ -281,17 +309,21 @@ class Transaction extends ResourceController
             // unlink('assets/images/transactions/' . $data['payment_image']);
             $transaction->delete($id);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' => 'Data berhasil dihapus'
-                ]
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'messages' => [
+            //         'success' => 'Data berhasil dihapus'
+            //     ]
+            // ];
 
-            return $this->respondDeleted($response, 201);
+            // return $this->respondDeleted($response, 201);
+            session()->setFlashdata('success', 'Data berhasil dihapus');
+            return redirect()->to('/transaction');
         } else {
-            return $this->failNotFound('Data tidak Ditemukan dengan id ' . $id, 404, 'Not Found');
+            // return $this->failNotFound('Data tidak Ditemukan dengan id ' . $id, 404, 'Not Found');
+            session()->setFlashdata('error', 'Data gagal dihapus');
+            return redirect()->to('/transaction');
         }
     }
 }

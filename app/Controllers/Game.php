@@ -85,7 +85,7 @@ class Game extends ResourceController
                 ]
             ],
             'image' => [
-                'rules' => 'uploaded[image]|max_size[image,1024]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
+                'rules' => 'uploaded[image]|max_size[image,10240]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
                 'errors' => [
                     'uploaded' => 'Game image is required',
                     'max_size' => 'Game image size is too big',
@@ -96,7 +96,9 @@ class Game extends ResourceController
         ];
 
         if (!$this->validate($rules)) {
-            return $this->fail($this->validator->getErrors());
+            // return $this->fail($this->validator->getErrors());
+            session()->setFlashdata('error', $this->validator->getErrors()['title']);
+            return redirect()->to('/game/new');
         } else {
             $game = new GameModel();
 
@@ -173,7 +175,7 @@ class Game extends ResourceController
                 ]
             ],
             'image' => [
-                'rules' => 'max_size[image,1024]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
+                'rules' => 'max_size[image,10240]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
                 'errors' => [
                     'uploaded' => 'Game image is required',
                     'max_size' => 'Game image size is too big',
@@ -184,7 +186,9 @@ class Game extends ResourceController
         ];
 
         if (!$this->validate($rules)) {
-            return $this->fail($this->validator->getErrors());
+            // return $this->fail($this->validator->getErrors());
+            session()->setFlashdata('error', $this->validator->getErrors()['title']);
+            return redirect()->to('/game/edit/' . $id);
         } else {
             $game = new GameModel();
 
@@ -224,15 +228,17 @@ class Game extends ResourceController
 
             $game->update($id, $data);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'message' => [
-                    'success' => 'Game updated successfully'
-                ]
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'message' => [
+            //         'success' => 'Game updated successfully'
+            //     ]
+            // ];
 
-            return $this->respond($response, 201);
+            // return $this->respond($response, 201);
+            session()->setFlashdata('success', 'Game berhasil diubah');
+            return redirect()->to('/game');
         }
     }
 

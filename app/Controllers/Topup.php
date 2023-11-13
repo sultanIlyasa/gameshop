@@ -18,17 +18,14 @@ class Topup extends ResourceController
         //
         $topup = new TopupModel();
 
-        if($topup->countAll() == 0){
-            return $this->failNotFound('Data tidak Ditemukan', 404, 'Not Found');
-        }
+        $data['topups'] = $topup->join('games', 'games.game_id = topups.game_id')->findAll();
 
-        $data = $topup->join('games', 'games.game_id = topups.game_id')->findAll();
-
-        if($data){
-            return $this->respond($data,200,'Data ditemukan');
-        }else{
-            return $this->failNotFound('Data tidak Ditemukan', 404, 'Not Found');
-        }
+        // if($data){
+        //     return $this->respond($data,200,'Data ditemukan');
+        // }else{
+        //     return $this->failNotFound('Data tidak Ditemukan', 404, 'Not Found');
+        // }
+        return view('/pages/admin/topup/show', $data);
     }
 
     /**
@@ -62,7 +59,11 @@ class Topup extends ResourceController
     public function new()
     {
         //
-        return view('welcome_message');
+        $game = new GameModel();
+
+        $data['games'] = $game->findAll();
+
+        return view('pages/admin/topup/add', $data);
     }
 
     /**
@@ -97,7 +98,9 @@ class Topup extends ResourceController
         ];
 
         if (!$this->validate($rules)) {
-            return $this->fail($this->validator->getErrors());
+            // return $this->fail($this->validator->getErrors());
+            session()->setFlashdata('errors', $this->validator->getErrors());
+            return redirect()->to('/topup/new');
         } else {
             $topup = new TopupModel();
             $game = new GameModel();
@@ -116,15 +119,17 @@ class Topup extends ResourceController
 
             $topup->insert($data);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' => 'Data berhasil ditambahkan'
-                ]
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'messages' => [
+            //         'success' => 'Data berhasil ditambahkan'
+            //     ]
+            // ];
 
-            return $this->respondCreated($response, 201);
+            // return $this->respondCreated($response, 201);
+            session()->setFlashdata('success', 'Topup berhasil ditambahkan');
+            return redirect()->to('/topup');
         }
     }
 
@@ -136,7 +141,14 @@ class Topup extends ResourceController
     public function edit($id = null)
     {
         //
-        return view('welcome_message');
+        $topup = new TopupModel();
+        $game = new GameModel();
+
+        $data['topup'] = $topup->join('games', 'games.game_id = topups.game_id')->where('topup_id', $id)->first();
+        $data['games'] = $game->findAll();
+
+        
+        return view('pages/admin/topup/edit', $data);
     }
 
     /**
@@ -171,7 +183,9 @@ class Topup extends ResourceController
         ];
 
         if (!$this->validate($rules)) {
-            return $this->fail($this->validator->getErrors());
+            // return $this->fail($this->validator->getErrors());
+            session()->setFlashdata('error', $this->validator->getErrors());
+            return redirect()->to('/topup/edit/' . $id);
         } else {
             $topup = new TopupModel();
             $game = new GameModel();
@@ -190,15 +204,17 @@ class Topup extends ResourceController
 
             $topup->update($id, $data);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' => 'Data berhasil diupdate'
-                ]
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'messages' => [
+            //         'success' => 'Data berhasil diupdate'
+            //     ]
+            // ];
 
-            return $this->respondCreated($response, 201);
+            // return $this->respondCreated($response, 201);
+            session()->setFlashdata('success', 'Topup berhasil diupdate');
+            return redirect()->to('/topup');
         }
     }
 
@@ -217,17 +233,21 @@ class Topup extends ResourceController
         if ($data) {
             $topup->delete($id);
 
-            $response = [
-                'status' => 201,
-                'error' => null,
-                'messages' => [
-                    'success' => 'Data berhasil dihapus'
-                ]
-            ];
+            // $response = [
+            //     'status' => 201,
+            //     'error' => null,
+            //     'messages' => [
+            //         'success' => 'Data berhasil dihapus'
+            //     ]
+            // ];
 
-            return $this->respondDeleted($response, 201);
+            // return $this->respondDeleted($response, 201);
+            session()->setFlashdata('success', 'Topup berhasil dihapus');
+            return redirect()->to('/topup');
         } else {
-            return $this->failNotFound('Data tidak Ditemukan dengan id ' . $id, 404, 'Not Found');
+            // return $this->failNotFound('Data tidak Ditemukan dengan id ' . $id, 404, 'Not Found');
+            session()->setFlashdata('error', 'Topup gagal dihapus');
+            return redirect()->to('/topup');
         }
     }
 }

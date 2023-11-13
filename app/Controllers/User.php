@@ -105,7 +105,9 @@ class User extends ResourceController
         ];
 
         if(!$this->validate($rules)){
-            return $this->fail($this->validator->getErrors());
+            // return $this->fail($this->validator->getErrors());
+            session()->setFlashdata('error', $this->validator->getErrors());
+            return redirect()->to('/user/new');
         }else{
             $user = new UserModel();
 
@@ -147,7 +149,9 @@ class User extends ResourceController
         if($data){
             return view('pages/admin/user/edit', $data);
         }else{
-            return $this->failNotFound('No Data Found with id ' . $id, 404, 'Not Found');
+            // return $this->failNotFound('No Data Found with id ' . $id, 404, 'Not Found');
+            session()->setFlashdata('error', 'User tidak ditemukan');
+            return redirect()->to('/user');
         }
     }
 
@@ -187,7 +191,9 @@ class User extends ResourceController
         ];
 
         if(!$this->validate($rules)){
-            return $this->fail($this->validator->getErrors());
+            // return $this->fail($this->validator->getErrors());
+            session()->setFlashdata('error', $this->validator->getErrors());
+            return redirect()->to('/user/edit/' . $id);
         }else{
             $user = new UserModel();
 
@@ -247,7 +253,9 @@ class User extends ResourceController
         ];
 
         if(!$this->validate($rules)){
-            return $this->fail($this->validator->getErrors());
+            // return $this->fail($this->validator->getErrors());
+            session()->setFlashdata('error', $this->validator->getErrors());
+            return redirect()->to('/user/edit/' . $id);
         }else{
             $user = new UserModel();
 
@@ -295,9 +303,12 @@ class User extends ResourceController
             // ];
 
             // return $this->respondDeleted($response, 201);
+            session()->setFlashdata('success', 'Data berhasil dihapus');
             return redirect()->to('/user');
         }else{
-            return $this->failNotFound('No Data Found with id ' . $id, 404, 'Not Found');
+            // return $this->failNotFound('No Data Found with id ' . $id, 404, 'Not Found');
+            session()->setFlashdata('error', 'User tidak ditemukan');
+            return redirect()->to('/user');
         }
     }
 }
