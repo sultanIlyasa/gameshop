@@ -1,84 +1,5 @@
 <?= $this->extend('/layout/templates'); ?>
-
 <?= $this->section('content'); ?>
-
-<style>
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
-    margin: 0;
-}
-
-
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-li {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-a {
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-a:hover {
-    background-color: #555;
-}
-
-.content-container {
-    margin-top: 20px;
-}
-
-button {
-    background-color: #4caf50;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-th {
-    background-color: #4caf50;
-    color: white;
-}
-
-td img {
-    max-width: 100px;
-    height: auto;
-}
-
-
-</style>
 <main>
     <div>
         <a href="/game/new">
@@ -130,5 +51,4 @@ td img {
         </table>
     </div>
 </main>
-
 <?= $this->endSection(); ?>

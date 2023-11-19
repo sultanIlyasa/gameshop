@@ -1,3 +1,3 @@
 <footer>
-    <h1>2023 Admin Dashboard. All rights reserved</h1>
+    <h1>Data Gameshop. All rights reserved</h1>
 </footer>
